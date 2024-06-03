@@ -1,0 +1,46 @@
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('Custom Menu')
+      .addItem('Move Selected Row and Delete', 'moveSelectedRowAndDelete')
+      .addToUi();
+}
+
+function moveSelectedRowAndDelete() {
+  var sourceSheetName = "Source"; // Change to the name of your source sheet
+  var destinationSheetName = "Destination"; // Change to the name of your destination sheet
+  
+  var spreadsheetId = 'spreadsheetid'; // Replace 'your_spreadsheet_id' with the actual ID
+  
+  var ss = SpreadsheetApp.openById(spreadsheetId);
+  
+  var sourceSheet = ss.getSheetByName(sourceSheetName);
+  var destinationSheet = ss.getSheetByName(destinationSheetName);
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  Logger.log("Active Spreadsheet: " + ss.getName());
+  
+  var sourceSheet = ss.getSheetByName(sourceSheetName);
+  Logger.log("Source Sheet: " + sourceSheet);
+  
+  var destinationSheet = ss.getSheetByName(destinationSheetName);
+  Logger.log("Destination Sheet: " + destinationSheet);
+  
+  var selectedRange = sourceSheet.getActiveRange();
+  
+  if (selectedRange.getNumRows() !== 1) {
+    Browser.msgBox('Please select exactly one row to move.');
+    return;
+  }
+  
+  var selectedRow = selectedRange.getRow();
+  var lastColumn = sourceSheet.getLastColumn();
+  
+  // Get values of the selected row
+  var rowValues = sourceSheet.getRange(selectedRow, 1, 1, lastColumn).getValues()[0];
+  
+  // Append the row to the destination sheet
+  destinationSheet.appendRow(rowValues);
+  
+  // Delete the row from the source sheet
+  sourceSheet.deleteRow(selectedRow);
+}
